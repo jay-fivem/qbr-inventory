@@ -384,22 +384,37 @@ RegisterNetEvent('inventory:client:CraftAttachment', function(itemName, itemCost
 	end)
 end)
 
+
+local lastWeapon = nil
 RegisterNetEvent("inventory:client:UseWeapon", function(weaponData, shootbool)
     local ply = PlayerPedId()
     local weaponName = tostring(weaponData.name)
     local weaponHash = GetHashKey(weaponData.name)
     Citizen.InvokeNative(0xB282DC6EBD803C75, ply, weaponHash, 500, true, 0)
-    if (weaponsOut[weapon]) then
-        if (weaponsOut[weapon].equipped) then
-            SetCurrentPedWeapon(PlayerPedId(), weapon, true, weaponData.attachPoint, false, false)
-            SetCurrentPedWeapon(PlayerPedId(), 0xA2719263, true, 0, false, false)
-            weaponsOut[weapon].equipped = false
-        else
-            SetCurrentPedWeapon(PlayerPedId(), weapon, true, 0, false, false)
-            weaponsOut[weapon].equipped = true
-        end
+    if lastWeapon == weaponHash then
+        lastWeapon = nil
+        Citizen.InvokeNative(0xADF692B254977C0C, ply, `WEAPON_UNARMED`, true)
+    else
+        lastWeapon = weaponHash
     end
 end)
+-- old shit for refereance
+-- RegisterNetEvent("inventory:client:UseWeapon", function(weaponData, shootbool)
+--     local ply = PlayerPedId()
+--     local weaponName = tostring(weaponData.name)
+--     local weaponHash = GetHashKey(weaponData.name)
+--     Citizen.InvokeNative(0xB282DC6EBD803C75, ply, weaponHash, 500, true, 0)
+--     if (weaponsOut[weapon]) then
+--         if (weaponsOut[weapon].equipped) then
+--             SetCurrentPedWeapon(PlayerPedId(), weapon, true, weaponData.attachPoint, false, false)
+--             SetCurrentPedWeapon(PlayerPedId(), 0xA2719263, true, 0, false, false)
+--             weaponsOut[weapon].equipped = false
+--         else
+--             SetCurrentPedWeapon(PlayerPedId(), weapon, true, 0, false, false)
+--             weaponsOut[weapon].equipped = true
+--         end
+--     end
+-- end)
 
 RegisterNetEvent('inventory:client:CheckWeapon', function(weaponName)
     local ped = PlayerPedId()
